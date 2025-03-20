@@ -48,19 +48,17 @@ public class ChatBot {
 				System.out.println("City: " + city);
 				System.out.println("Latitude: " + latitude);
 				System.out.println("Longitude: " + longitude);
-
-
-				// next step is to display the weather data of the city.
-
+				// implementation of displayWeatherData() method
+				displayWeatherData(latitude, longitude);
 
 				// while condition: city is not equal to "No"
 			} while (!city.equalsIgnoreCase("No"));
-            // catch potential Exception
+			// catch potential Exception
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
+
 	// Derrick Longkai Zhang 3133272
 	// method getLocationData()
 	// type of the method is JSONObject with one argument: String city
@@ -99,27 +97,29 @@ public class ChatBot {
 		}
 		return null;
 	}
+
 	// Derrick Longkai Zhang 3133272
 	//fetchApiResponse() method with String argument: the jason city url
-	private static HttpURLConnection fetchApiResponse(String urlString){
-		try{
+	private static HttpURLConnection fetchApiResponse(String urlString) {
+		try {
 			// attempt to connect to the API
 			URL url = new URL(urlString);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
 			// set request method to get data from the API url
 			connection.setRequestMethod("GET");
-            // return the connection condition
+			// return the connection condition
 			return connection;
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// connection fail
 		return null;
 	}
+
 	// Derrick Longkai Zhang 3133272
-    // method readApiResponse with a HttpURLConnection argument apiConnection
+	// method readApiResponse with a HttpURLConnection argument apiConnection
 	private static String readApiResponse(HttpURLConnection apiConn) {
 		try {
 			// Create a StringBuilder to store the resulting JSON data
@@ -133,7 +133,7 @@ public class ChatBot {
 				// Append the current line to the StringBuilder
 				result.append(scanner.nextLine());
 			}
-            // close scanner
+			// close scanner
 			scanner.close();
 
 			// Return the JSON data as a String
@@ -144,5 +144,64 @@ public class ChatBot {
 		}
 		// Return null if there was an issue reading the response
 		return null;
+	}
+
+	// Lincoln Teo Ming Kern 3122215
+	// method displayWeatherData() with two arguments: double latitude, double longitude
+	private static void displayWeatherData(double latitude, double longitude) {
+		try {
+			//Get the API response from the OpenWeatherMap API
+			// with two arguments: latitude and longitude to input the corresponding coordinates into the API link
+			String url = "https://api.openweathermap.org/data/2.5/forecast?lat=" + latitude + "&lon=" + longitude + "&units=metric&appid=ecfb062d63ee7dbdea0650c7d7f89eb4";
+			HttpURLConnection apiConnection = fetchApiResponse(url);
+
+			// check for response status code
+			// 200 - means that the request was successful
+			if (apiConnection.getResponseCode() != 200) {
+				System.out.println("Error: Could not connect to API Weather");
+				return;
+			}
+
+			// Read the response and convert to String type
+			String jsonResponse = readApiResponse(apiConnection);
+
+			// Parse the string into a JSON Object
+			JSONParser parser = new JSONParser();
+			JSONObject jsonObject = (JSONObject) parser.parse(jsonResponse);
+			JSONArray list = (JSONArray) jsonObject.get("list");
+
+			// Store the data into variables
+			if (list != null && !list.isEmpty()) {
+				//retrieves the first element from the JSON array list
+				JSONObject firstEntry = (JSONObject) list.get(0);
+				// extracts the main JSON object from the firstEntry JSON object
+				JSONObject main = (JSONObject) firstEntry.get("main");
+
+				// get current temp from the Json Object named main
+				double temperature = (double) main.get("temp");
+				System.out.println("Current Temperature (C): " + temperature);
+
+				// get minimum temp from the Json Object named main
+				double tempMin = (double) main.get("temp_min");
+				System.out.println("Minimum Temperature (C): " + tempMin);
+
+				// get max temp from the Json Object named main
+				double tempMax = (double) main.get("temp_max");
+				System.out.println("Maximum Temperature (C): " + tempMax);
+
+				// get humidity from the Json Object named main
+				long humidity = (long) main.get("humidity");
+				System.out.println("Humidity: " + humidity);
+
+				//code extracts the wind JSON object from the firstEntry:
+				JSONObject wind = (JSONObject) firstEntry.get("wind");
+				// get wind speed from the Json Object named wind
+				double windSpeed = (double) wind.get("speed");
+				System.out.println("Wind Speed (Km/H): " + windSpeed);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 }
