@@ -25,7 +25,7 @@ public class ChatBot {
 			do {
 				// asking user to input a city name or input "No" to exit
 				System.out.println("-----------------------------------------------");
-				System.out.print("Please enter a city(or enter \"No\" to exit): ");
+				System.out.print("Please enter a city (or enter \"No\" to exit): ");
 
 				// getting the inputted data
 				city = scanner.next();
@@ -37,7 +37,13 @@ public class ChatBot {
 
 				// Get location data
 				// create JsonObject to get the Location
-				JSONObject cityLocationData = (JSONObject) getLocationData(city);// calling the 1getLocationData() method
+				JSONObject cityLocationData = getLocationData(city);
+
+				// invalid location means we should not continue further
+				if (cityLocationData == null) {
+					System.out.println("Location \"" + city + "\" was not found, please ensure the spelling is correct and re-enter your selection.");
+					continue;
+				}
 
 				// get the latitude of the city
 				double latitude = (double) cityLocationData.get("latitude");
@@ -63,7 +69,6 @@ public class ChatBot {
 	// method getLocationData()
 	// type of the method is JSONObject with one argument: String city
 	public static JSONObject getLocationData(String city) {
-
 		// regex expression to trim the city format
 		city = city.replaceAll(" ", "+");
 		// getting the json city url and store it as a string
@@ -90,6 +95,13 @@ public class ChatBot {
 
 			// step4. Retrieve Location Data
 			JSONArray locationData = (JSONArray) resultsJsonObj.get("results");
+
+			// ensure results have been found before returning them
+			if (locationData == null) {
+				System.out.println("Error: No results were found for the city query \"" + city + "\"");
+				return null;
+			}
+
 			return (JSONObject) locationData.get(0);
 
 		} catch (Exception e) {
@@ -202,6 +214,5 @@ public class ChatBot {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 }
