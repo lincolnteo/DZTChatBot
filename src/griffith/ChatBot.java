@@ -57,6 +57,24 @@ public class ChatBot {
 				// implementation of displayWeatherData() method
 				displayWeatherData(latitude, longitude);
 
+				// Derrick Longkai Zhang 3133272 test weather condition and time
+				// convert double latitude and longitude to String
+				String latitude1 = Double.toString(latitude);
+				String longitude1 = Double.toString(longitude);
+				// create an instance of WeatherConditionAndTime class
+				WeatherConditionAndTime cityOneCondition = new WeatherConditionAndTime();
+				// call the displayWeatherConditionAndTime() method to display the current weather condition and time
+
+				cityOneCondition.displayWeatherConditionAndTime(latitude1,longitude1);
+
+				// Derrick Longkai Zhang 3133272
+				// test weatherForecast class
+				// create an instance of WeatherForecast class
+				WeatherForecast cityOneForecast = new WeatherForecast();
+				// call the weatherForecast() method in the class to display today, and 3 days after's weather forecast
+				System.out.println("Weather Forecast:");
+				cityOneForecast.weatherForecast(latitude1,longitude1);
+
 				// while condition: city is not equal to "No"
 			} while (!city.equalsIgnoreCase("No"));
 			// catch potential Exception
