@@ -57,17 +57,11 @@ public class ChatBot {
 				// implementation of displayWeatherData() method
 				displayWeatherData(latitude, longitude);
 
-				// Derrick Longkai Zhang 3133272 test weather condition and time
+				// Derrick Longkai Zhang 3133272
+				// add weather forecast
 				// convert double latitude and longitude to String
 				String latitude1 = Double.toString(latitude);
 				String longitude1 = Double.toString(longitude);
-				// create an instance of WeatherConditionAndTime class
-				WeatherConditionAndTime cityOneCondition = new WeatherConditionAndTime();
-				// call the displayWeatherConditionAndTime() method to display the current weather condition and time
-
-				cityOneCondition.displayWeatherConditionAndTime(latitude1,longitude1);
-
-				// Derrick Longkai Zhang 3133272
 				// test weatherForecast class
 				// create an instance of WeatherForecast class
 				WeatherForecast cityOneForecast = new WeatherForecast();

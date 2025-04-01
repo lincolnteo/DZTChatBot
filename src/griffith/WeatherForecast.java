@@ -8,19 +8,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WeatherForecast {
-    // Derrick Longkai Zhang 3133272
+
     public static <AsyncHttpClient, OkHttpClient, Response> void weatherForecast(String latitude,String longitude) throws IOException, InterruptedException {
         // Construct API URL with latitude and longitude parameters
         String url = "https://ai-weather-by-meteosource.p.rapidapi.com/daily?lat="+latitude+"&lon="+longitude+"&language=en&units=auto";
 
-        // Create an HTTP request with required headers
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("x-rapidapi-key", "3ec6205bf9msh83861deaecbd4b8p1ad8b7jsnedd27a4f8084")
                 .header("x-rapidapi-host", "ai-weather-by-meteosource.p.rapidapi.com")
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
-        // Send the request and capture the response
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         //System.out.println(response.body());
 
