@@ -6,11 +6,11 @@ import java.net.http.HttpResponse;
 
 public class WeatherConditionAndTime {
     // Derrick, Longkai Zhang 3133272
-    //displayWeatherConditionAndTime() method is to display the current weather condition and local time based on latitude and longitude
-    //based on latitude and longitude using an weather API request.
-    //@throws IOException           If an input/output error occurs
-    //@throws InterruptedException  If the request is interrupted
-    public static<AsyncHttpClient, OkHttpClient, Response>  void displayWeatherConditionAndTime(String latitude,String longitude)throws IOException, InterruptedException{
+    // displayWeatherConditionAndTime() method is to display the current weather condition and local time based on latitude and longitude
+    // based on latitude and longitude using and weather API request.
+    // @throws IOException           If an input/output error occurs
+    // @throws InterruptedException  If the request is interrupted
+    public static<AsyncHttpClient, OkHttpClient, Response>  void displayWeatherConditionAndTime(String latitude,String longitude) throws IOException, InterruptedException{
 
         // Construct the API request URL using latitude and longitude
         String u = "https://easy-weather1.p.rapidapi.com/daily/5?latitude="+latitude+"&longitude="+longitude;
@@ -18,7 +18,7 @@ public class WeatherConditionAndTime {
         // Create HTTP request object
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(u))
-                .header("x-rapidapi-key", "3ec6205bf9msh83861deaecbd4b8p1ad8b7jsnedd27a4f8084")// API Key (Replace with your actual key)
+                .header("x-rapidapi-key", "3ec6205bf9msh83861deaecbd4b8p1ad8b7jsnedd27a4f8084")// API Key (probably should be stored in a more secure way)
                 .header("x-rapidapi-host", "easy-weather1.p.rapidapi.com")// API Host
                 .method("GET", HttpRequest.BodyPublishers.noBody())// HTTP GET Request
                 .build();

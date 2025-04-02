@@ -54,18 +54,17 @@ public class WeatherForecast {
         Matcher matcher3 = pattern3.matcher(body);
 
         // List to store extracted values
-        ArrayList<String> summarys = new ArrayList<>();
+        ArrayList<String> summaries = new ArrayList<>();
 
         // Extract all matches
         while (matcher3.find()) {
-            summarys.add(matcher3.group(1));  // Group 1 captures the value inside quotes
+            summaries.add(matcher3.group(1));  // Group 1 captures the value inside quotes
         }
 
         // Displaying the extracted data for the first 4 days
         // today and 3 days after
-        for(int i = 0;i < 4;i++){
-            System.out.println("Date:" + days.get(i)+" Weather condition:"+weathers.get(i)+"\nWeather Description:"+summarys.get(i));
+        for (int i = 0;i < 4;i++){
+            Color.println("Date:" + days.get(i) + " Weather condition:" + weathers.get(i) + "\nWeather Description:" + summaries.get(i), Color.Type.CYAN);
         }
     }
-
-    }
+}

@@ -11,7 +11,9 @@ class ChatBotTest {
     @Test
     void getLocationData() {
         int i = 0;
+        // loop through each city
         while (i != CITIES.length) {
+            // get the json response for each city
             JSONObject json = ChatBot.getLocationData(CITIES[i++]);
 
             // fake city should not return value
