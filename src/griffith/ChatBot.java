@@ -24,14 +24,14 @@ public class ChatBot {
 			// using do while loop to let user quit if input: No
 			do {
 				// asking user to input a city name or input "No" to exit
-				System.out.println("-----------------------------------------------");
-				System.out.print("Please enter a city (or enter \"No\" to exit): ");
+				Color.println("-----------------------------------------------", Color.Type.CYAN);
+				Color.print("Please enter a city (or enter \"No\" to exit): ", Color.Type.CYAN);
 
 				// getting the inputted data
 				city = scanner.next();
 				// if inputted data == 'No' then print out a message and quit the loop
 				if (city.equalsIgnoreCase("No")) {
-					System.out.println("You have quited");
+					Color.println("You have quited", Color.Type.CYAN);
 					break;
 				}
 
@@ -41,7 +41,7 @@ public class ChatBot {
 
 				// invalid location means we should not continue further
 				if (cityLocationData == null) {
-					System.out.println("Location \"" + city + "\" was not found, please ensure the spelling is correct and re-enter your selection.");
+					Color.printError("Location \"" + city + "\" was not found, please ensure the spelling is correct and re-enter your selection.");
 					continue;
 				}
 
@@ -51,9 +51,9 @@ public class ChatBot {
 				double longitude = (double) cityLocationData.get("longitude");
 
 				// print out the city's name and location:
-				System.out.println("City: " + city);
-				System.out.println("Latitude: " + latitude);
-				System.out.println("Longitude: " + longitude);
+				Color.println("City: " + city, Color.Type.CYAN);
+				Color.println("Latitude: " + latitude, Color.Type.CYAN);
+				Color.println("Longitude: " + longitude, Color.Type.CYAN);
 				// implementation of displayWeatherData() method
 				displayWeatherData(latitude, longitude);
 
@@ -65,15 +65,15 @@ public class ChatBot {
 				// test weatherForecast class
 				// create an instance of WeatherForecast class
 				WeatherForecast cityOneForecast = new WeatherForecast();
-				// call the weatherForecast() method in the class to display today, and 3 days after's weather forecast
-				System.out.println("Weather Forecast:");
+				// call the weatherForecast() method in the class to display the weather forecast of the next 4 days starting today
+				Color.println("Weather Forecast:", Color.Type.CYAN);
 				cityOneForecast.weatherForecast(latitude1,longitude1);
 
 				// while condition: city is not equal to "No"
 			} while (!city.equalsIgnoreCase("No"));
 			// catch potential Exception
 		} catch (Exception e) {
-			e.printStackTrace();
+			Color.printError(e.toString());
 		}
 	}
 
@@ -94,7 +94,7 @@ public class ChatBot {
 			// check for response status
 			// 200 - means that the connection was a success
 			if (apiConnection.getResponseCode() != 200) {
-				System.out.println("Error: Could not connect to geography API.");
+				Color.printError("Could not connect to geography API.");
 				return null;
 			}
 
@@ -110,20 +110,20 @@ public class ChatBot {
 
 			// ensure results have been found before returning them
 			if (locationData == null) {
-				System.out.println("Error: No results were found for the city query \"" + city + "\"");
+				Color.printError("No results were found for the city query \"" + city + "\"");
 				return null;
 			}
 
 			return (JSONObject) locationData.get(0);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Color.printError(e.toString());
 		}
 		return null;
 	}
 
 	// Derrick Longkai Zhang 3133272
-	//fetchApiResponse() method with String argument: the jason city url
+	// fetchApiResponse() method with String argument: the json city url
 	private static HttpURLConnection fetchApiResponse(String urlString) {
 		try {
 			// attempt to connect to the API
@@ -135,7 +135,7 @@ public class ChatBot {
 			// return the connection condition
 			return connection;
 		} catch (IOException e) {
-			e.printStackTrace();
+			Color.printError(e.toString());
 		}
 
 		// connection fail
@@ -164,7 +164,7 @@ public class ChatBot {
 			return result.toString();
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			Color.printError(e.toString());
 		}
 		// Return null if there was an issue reading the response
 		return null;
@@ -182,7 +182,7 @@ public class ChatBot {
 			// check for response status code
 			// 200 - means that the request was successful
 			if (apiConnection.getResponseCode() != 200) {
-				System.out.println("Error: Could not connect to API Weather");
+				Color.printError("Could not connect to API Weather");
 				return;
 			}
 
@@ -203,28 +203,28 @@ public class ChatBot {
 
 				// get current temp from the Json Object named main
 				double temperature = (double) main.get("temp");
-				System.out.println("Current Temperature (C): " + temperature);
+				Color.println("Current Temperature (C): " + temperature, Color.Type.CYAN);
 
 				// get minimum temp from the Json Object named main
 				double tempMin = (double) main.get("temp_min");
-				System.out.println("Minimum Temperature (C): " + tempMin);
+				Color.println("Minimum Temperature (C): " + tempMin, Color.Type.CYAN);
 
 				// get max temp from the Json Object named main
 				double tempMax = (double) main.get("temp_max");
-				System.out.println("Maximum Temperature (C): " + tempMax);
+				Color.println("Maximum Temperature (C): " + tempMax, Color.Type.CYAN);
 
 				// get humidity from the Json Object named main
 				long humidity = (long) main.get("humidity");
-				System.out.println("Humidity: " + humidity);
+				Color.println("Humidity: " + humidity, Color.Type.CYAN);
 
 				//code extracts the wind JSON object from the firstEntry:
 				JSONObject wind = (JSONObject) firstEntry.get("wind");
 				// get wind speed from the Json Object named wind
 				double windSpeed = (double) wind.get("speed");
-				System.out.println("Wind Speed (Km/H): " + windSpeed);
+				Color.println("Wind Speed (Km/H): " + windSpeed, Color.Type.CYAN);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Color.printError(e.toString());
 		}
 	}
 }
