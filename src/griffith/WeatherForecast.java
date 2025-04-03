@@ -69,6 +69,11 @@ public class WeatherForecast {
         }
     }
 
+    // copy constructor
+    public WeatherForecast(WeatherForecast other) {
+        this.data = other.data;
+    }
+
     public boolean validDay(int n) {
         if (n < 0 || n >= data.size()) {
             Color.error("Day " + n + " is out of range of size " + data.size());
@@ -89,11 +94,11 @@ public class WeatherForecast {
         double feelsLike = (double) selected.get("feels_like");
 
         // Suggest appropriate clothing based on the feels_like temperature
-        if (feelsLike < 5) {
+        if (feelsLike < 5.0) {
             return "Wear a heavy coat and warm clothing.";
-        } else if (feelsLike < 10) {
+        } else if (feelsLike < 10.0) {
             return "Wear a jacket and warm clothing.";
-        } else if (feelsLike < 15) {
+        } else if (feelsLike < 15.0) {
             return "Wear a light jacket or sweater.";
         } else {
             return "Wear light clothing.";
