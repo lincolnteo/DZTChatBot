@@ -1,3 +1,8 @@
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,7 +25,7 @@ public class WeatherForecast {
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        //System.out.println(response.body());
+//        System.out.println(response.body());
 
         // Store response body for processing
         String body = response.body();
@@ -56,15 +61,50 @@ public class WeatherForecast {
         // List to store extracted values
         ArrayList<String> summaries = new ArrayList<>();
 
-        // Extract all matches
-        while (matcher3.find()) {
-            summaries.add(matcher3.group(1));  // Group 1 captures the value inside quotes
-        }
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) parser.parse(body);
+            JSONObject daily = (JSONObject) jsonObject.get("daily");
+            JSONArray data = (JSONArray) daily.get("data");
 
-        // Displaying the extracted data for the first 4 days
-        // today and 3 days after
-        for (int i = 0;i < 4;i++){
-            Color.println("Date:" + days.get(i) + " Weather condition:" + weathers.get(i) + "\nWeather Description:" + summaries.get(i), Color.Type.CYAN);
+            // Extract all matches
+            while (matcher3.find()) {
+                summaries.add(matcher3.group(1));  // Group 1 captures the value inside quotes
+            }
+
+            // Displaying the extracted data for the first 4 days
+            // today and 3 days after
+            for (int i = 1; i < 4; i++) {
+                JSONObject dayData = (JSONObject) data.get(i);
+                String day = (String) dayData.get("day");
+                String weather = (String) dayData.get("weather");
+                String summary = (String) dayData.get("summary");
+                double feelsLike = (double) dayData.get("feels_like");
+
+                // Suggest appropriate clothing based on the feels_like temperature
+                String clothingSuggestion;
+                if (feelsLike < 5) {
+                    clothingSuggestion = "Wear a heavy coat and warm clothing.";
+                } else if (feelsLike < 10) {
+                    clothingSuggestion = "Wear a jacket and warm clothing.";
+                } else if (feelsLike < 15) {
+                    clothingSuggestion = "Wear a light jacket or sweater.";
+                } else {
+                    clothingSuggestion = "Wear light clothing.";
+                }
+
+                // Display the extracted data
+
+                Color.println("\nDate: " + day,Color.Type.WHITE);
+
+                Color.println("Weather condition: " + weather,Color.Type.PURPLE);
+
+                Color.println("Weather Description: " + summary,Color.Type.YELLOW);
+
+                Color.println("Clothing Suggestion: " + clothingSuggestion ,Color.Type.GREEN);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 }

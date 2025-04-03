@@ -52,8 +52,8 @@ public class ChatBot {
 
 				// print out the city's name and location:
 				Color.println("City: " + city, Color.Type.CYAN);
-				Color.println("Latitude: " + latitude, Color.Type.CYAN);
-				Color.println("Longitude: " + longitude, Color.Type.CYAN);
+//				Color.println("Latitude: " + latitude, Color.Type.CYAN);
+//				Color.println("Longitude: " + longitude, Color.Type.CYAN);
 				// implementation of displayWeatherData() method
 				displayWeatherData(latitude, longitude);
 
