@@ -64,10 +64,13 @@ public class ChatBot {
 				String longitude1 = Double.toString(longitude);
 				// test weatherForecast class
 				// create an instance of WeatherForecast class
-				WeatherForecast cityOneForecast = new WeatherForecast();
+				WeatherForecast cityOneForecast = new WeatherForecast(latitude1, longitude1);
+
 				// call the weatherForecast() method in the class to display the weather forecast of the next 4 days starting today
 				Color.println("Weather Forecast:", Color.Type.CYAN);
-				cityOneForecast.weatherForecast(latitude1,longitude1);
+
+				// print out the forecast for the next 4 days starting today
+				System.out.println(cityOneForecast.forecast(0, 4));
 
 				// while condition: city is not equal to "No"
 			} while (!city.equalsIgnoreCase("No"));

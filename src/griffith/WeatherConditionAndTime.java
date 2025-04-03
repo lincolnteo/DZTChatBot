@@ -10,7 +10,7 @@ public class WeatherConditionAndTime {
     // based on latitude and longitude using and weather API request.
     // @throws IOException           If an input/output error occurs
     // @throws InterruptedException  If the request is interrupted
-    public static<AsyncHttpClient, OkHttpClient, Response>  void displayWeatherConditionAndTime(String latitude,String longitude) throws IOException, InterruptedException{
+    public static void displayWeatherConditionAndTime(String latitude,String longitude) throws IOException, InterruptedException{
 
         // Construct the API request URL using latitude and longitude
         String u = "https://easy-weather1.p.rapidapi.com/daily/5?latitude="+latitude+"&longitude="+longitude;
@@ -58,10 +58,4 @@ public class WeatherConditionAndTime {
             System.out.println("readTime key not found.");
         }
     }
-
-
-
-
-
-
 }
