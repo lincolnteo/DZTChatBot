@@ -13,8 +13,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WeatherForecast {
+    private JSONArray data;
 
-    public static <AsyncHttpClient, OkHttpClient, Response> void weatherForecast(String latitude,String longitude) throws IOException, InterruptedException {
+    public WeatherForecast(JSONArray data) {
+        this.data = data;
+    }
+
+    public WeatherForecast(String latitude,String longitude) throws IOException, InterruptedException {
         // Construct API URL with latitude and longitude parameters
         String url = "https://ai-weather-by-meteosource.p.rapidapi.com/daily?lat="+latitude+"&lon="+longitude+"&language=en&units=auto";
 
@@ -25,7 +30,6 @@ public class WeatherForecast {
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-//        System.out.println(response.body());
 
         // Store response body for processing
         String body = response.body();
@@ -54,57 +58,95 @@ public class WeatherForecast {
             weathers.add(matcher2.group(1));  // Group 1 captures the value inside quotes
         }
 
-        // Regular expression to find all "summary":"<value>"
-        Pattern pattern3 = Pattern.compile("\"summary\":\"(.*?)\"");
-        Matcher matcher3 = pattern3.matcher(body);
-
-        // List to store extracted values
-        ArrayList<String> summaries = new ArrayList<>();
-
+        // get the data JSONArray
         try {
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(body);
             JSONObject daily = (JSONObject) jsonObject.get("daily");
-            JSONArray data = (JSONArray) daily.get("data");
-
-            // Extract all matches
-            while (matcher3.find()) {
-                summaries.add(matcher3.group(1));  // Group 1 captures the value inside quotes
-            }
-
-            // Displaying the extracted data for the first 4 days
-            // today and 3 days after
-            for (int i = 1; i < 4; i++) {
-                JSONObject dayData = (JSONObject) data.get(i);
-                String day = (String) dayData.get("day");
-                String weather = (String) dayData.get("weather");
-                String summary = (String) dayData.get("summary");
-                double feelsLike = (double) dayData.get("feels_like");
-
-                // Suggest appropriate clothing based on the feels_like temperature
-                String clothingSuggestion;
-                if (feelsLike < 5) {
-                    clothingSuggestion = "Wear a heavy coat and warm clothing.";
-                } else if (feelsLike < 10) {
-                    clothingSuggestion = "Wear a jacket and warm clothing.";
-                } else if (feelsLike < 15) {
-                    clothingSuggestion = "Wear a light jacket or sweater.";
-                } else {
-                    clothingSuggestion = "Wear light clothing.";
-                }
-
-                // Display the extracted data
-
-                Color.println("\nDate: " + day,Color.Type.WHITE);
-
-                Color.println("Weather condition: " + weather,Color.Type.PURPLE);
-
-                Color.println("Weather Description: " + summary,Color.Type.YELLOW);
-
-                Color.println("Clothing Suggestion: " + clothingSuggestion ,Color.Type.GREEN);
-            }
+            data = (JSONArray) daily.get("data");
         } catch (ParseException e) {
-            e.printStackTrace();
+            Color.printError(e.toString());
         }
+    }
+
+    // copy constructor
+    public WeatherForecast(WeatherForecast other) {
+        this.data = other.data;
+    }
+
+    public boolean validDay(int n) {
+        if (n < 0 || n >= data.size()) {
+            Color.error("Day " + n + " is out of range of size " + data.size());
+            return false;
+        }
+        return true;
+    }
+
+    // get the clothing suggestion for day n
+    public String clothingSuggestion(int n) {
+        // day must fall within range
+        if (!validDay(n)) {
+            return "";
+        }
+
+        // get the feels_like parameter
+        JSONObject selected = (JSONObject) data.get(n);
+        double feelsLike = (double) selected.get("feels_like");
+
+        // Suggest appropriate clothing based on the feels_like temperature
+        if (feelsLike < 5.0) {
+            return "Wear a heavy coat and warm clothing.";
+        } else if (feelsLike < 10.0) {
+            return "Wear a jacket and warm clothing.";
+        } else if (feelsLike < 15.0) {
+            return "Wear a light jacket or sweater.";
+        } else {
+            return "Wear light clothing.";
+        }
+    }
+
+    // get the forecast for day n
+    public String forecast(int n) {
+        // invalid day
+        if (!validDay(n)) {
+            return "";
+        }
+
+        // get the corresponding day
+        JSONObject current = (JSONObject) data.get(n);
+
+        // return formatted data
+        return Color.color("\nDate: "              + current.get("day"),     Color.Type.WHITE)  + "\n" +
+               Color.color("Weather condition: "   + current.get("weather"), Color.Type.PURPLE) + "\n" +
+               Color.color("Weather Description: " + current.get("summary"), Color.Type.YELLOW) + "\n" +
+               Color.color("Clothing Suggestion: " + clothingSuggestion(n),  Color.Type.GREEN)  + "\n";
+    }
+
+    // get the forecast between begin and end days, 0 corresponds to today
+    public String forecast(int begin, int end) {
+        // invalid begin or end day
+        if (!(validDay(begin) || validDay(end))) {
+            return "";
+        }
+
+        // ensure end is after begin
+        if (end < begin) {
+            Color.printError("Begin date cannot be before end");
+            return "";
+        }
+
+        // append each day's forecast to the result
+        String result = "";
+        for (int i = begin; i != end; ++i)
+            result += forecast(i);
+
+        // return the result
+        return result;
+    }
+
+    // get the full data
+    @Override
+    public String toString() {
+        return forecast(0, data.size());
     }
 }
