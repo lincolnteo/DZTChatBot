@@ -6,34 +6,92 @@ import org.json.simple.parser.JSONParser;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class ChatBot {
 	public static void main(String[] args) {
 
-		// Derrick Longkai Zhang 3133272
-		// my task is to input a city name from user, then get the location's: latitude and longitude with Location API
-		// using try() and catch() to handle necessary exceptions.
-		try {
 
-			// Open scanner to let user input a city
+		// initial conversation
+		Color.println("-----------------------------------------------", Color.Type.GREEN);
+		Color.println("ChatBot: Hello, I am your personal Travelling ChatBot, ask me something......", Color.Type.GREEN);
+		Color.println("User: I would like to make a plan for visiting five cities and each city for three days, \nUser: Can you tell me the weather conditions there?", Color.Type.GREEN);
+		Color.println("ChatBot: Sure, no problem, I need you to tell me the name of cities that you want to travel.", Color.Type.GREEN);
+
+		try {
+			// Open scanner to let user input cities
 			Scanner scanner = new Scanner(System.in);
 
-			// initiate the city variable
-			String city = "";
+			// arrayList to store cities' name
+			ArrayList<String> city = new ArrayList<>();
+
+			// index for five city for while loop
+			int index = 1;
+
+			// initiate the input variable
+			String input = "";
+
 			// using do while loop to let user quit if input: No
 			do {
 				// asking user to input a city name or input "No" to exit
-				Color.println("-----------------------------------------------", Color.Type.CYAN);
-				Color.print("Please enter a city (or enter \"No\" to exit): ", Color.Type.CYAN);
+				Color.print("Please enter city " +index+","+"(or enter \"No\" to exit): ", Color.Type.CYAN);
 
 				// getting the inputted data
-				city = scanner.next();
+				input = scanner.next();
+
 				// if inputted data == 'No' then print out a message and quit the loop
-				if (city.equalsIgnoreCase("No")) {
+				if (input.equalsIgnoreCase("No")) {
 					Color.println("You have quited", Color.Type.CYAN);
 					break;
 				}
+
+				// Get location data
+				// create JsonObject to get the Location
+				JSONObject cityLocationData = getLocationData(input);
+
+				// invalid location means we should not continue further
+				if (cityLocationData == null) {
+					Color.printError("Location \"" + input + "\" was not found, please ensure the spelling is correct and re-enter your selection.");
+					continue;
+				}
+
+				// after checking the city name then
+				// store the valid city name to the arrayList
+				city.add(input);
+
+				// city index plus one
+			    index++;
+
+				// while condition: city is not equal to "No" and index is less than or equal to 5
+			} while (!input.equalsIgnoreCase("No") && index <= 5);
+
+			// print arrayList
+			//System.out.println(city.toString());
+
+			System.out.println("\nChatBot: Here is the weather condition and forecast:\n");
+
+			// for loop to print out weather conditions based on how many cities in that arrayList
+			for(int i = 0;i < city.size();i++) {
+
+				// each city call the printCityResult() method to display weather condition and next three days' forecast
+				printCityResult(city.get(i));
+			}
+
+			// catch potential Exception
+		} catch (Exception e) {
+			Color.printError(e.toString());
+		}
+
+	}
+
+	// method to get weather information based on a city name
+	// call this method five times for five different cities
+	public static void printCityResult(String city) {
+
+		// using try() and catch() to handle necessary exceptions.
+		try {
 
 				// Get location data
 				// create JsonObject to get the Location
@@ -42,7 +100,6 @@ public class ChatBot {
 				// invalid location means we should not continue further
 				if (cityLocationData == null) {
 					Color.printError("Location \"" + city + "\" was not found, please ensure the spelling is correct and re-enter your selection.");
-					continue;
 				}
 
 				// get the latitude of the city
@@ -52,8 +109,8 @@ public class ChatBot {
 
 				// print out the city's name and location:
 				Color.println("City: " + city, Color.Type.CYAN);
-//				Color.println("Latitude: " + latitude, Color.Type.CYAN);
-//				Color.println("Longitude: " + longitude, Color.Type.CYAN);
+                //Color.println("Latitude: " + latitude, Color.Type.CYAN);
+                //Color.println("Longitude: " + longitude, Color.Type.CYAN);
 				// implementation of displayWeatherData() method
 				displayWeatherData(latitude, longitude);
 
@@ -72,9 +129,6 @@ public class ChatBot {
 				// print out the forecast for the next 4 days starting today
 				System.out.println(cityOneForecast.forecast(0, 4));
 
-				// while condition: city is not equal to "No"
-			} while (!city.equalsIgnoreCase("No"));
-			// catch potential Exception
 		} catch (Exception e) {
 			Color.printError(e.toString());
 		}
