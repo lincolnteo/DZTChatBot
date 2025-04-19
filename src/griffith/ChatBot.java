@@ -167,7 +167,6 @@ public class ChatBot {
 			}
 
 			return (JSONObject) locationData.get(0);
-
 		} catch (Exception e) {
 			Color.printError(e.toString());
 		}
