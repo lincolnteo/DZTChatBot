@@ -143,5 +143,10 @@ public class Color {
     public static void printError(String input) {
         System.out.println(error("Error: " + input));
     }
+
+    // print as ChatBot
+    public static void printChatBot(String input) {
+        println("Chatbot: " + input, Type.GREEN);
+    }
 }
 
