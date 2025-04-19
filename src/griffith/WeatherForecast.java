@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.net.http.HttpClient.newHttpClient;
+
 public class WeatherForecast {
     private JSONArray data;
 
@@ -29,34 +31,10 @@ public class WeatherForecast {
                 .header("x-rapidapi-host", "ai-weather-by-meteosource.p.rapidapi.com")
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
-        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         // Store response body for processing
         String body = response.body();
-
-        // Regular expression to find all "day":"<value>"
-        Pattern pattern = Pattern.compile("\"day\":\"(.*?)\"");
-        Matcher matcher = pattern.matcher(body);
-
-        // List to store extracted values
-        ArrayList<String> days = new ArrayList<>();
-
-        // Extract all matches
-        while (matcher.find()) {
-            days.add(matcher.group(1));  // Group 1 captures the value inside quotes
-        }
-
-        // Regular expression to find all "weather":"<value>"
-        Pattern pattern2 = Pattern.compile("\"weather\":\"(.*?)\"");
-        Matcher matcher2 = pattern2.matcher(body);
-
-        // List to store extracted values
-        ArrayList<String> weathers = new ArrayList<>();
-
-        // Extract all matches
-        while (matcher2.find()) {
-            weathers.add(matcher2.group(1));  // Group 1 captures the value inside quotes
-        }
 
         // get the data JSONArray
         try {
@@ -67,11 +45,6 @@ public class WeatherForecast {
         } catch (ParseException e) {
             Color.printError(e.toString());
         }
-    }
-
-    // copy constructor
-    public WeatherForecast(WeatherForecast other) {
-        this.data = other.data;
     }
 
     public boolean validDay(int n) {
@@ -136,12 +109,12 @@ public class WeatherForecast {
         }
 
         // append each day's forecast to the result
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = begin; i != end; ++i)
-            result += forecast(i);
+            result.append(forecast(i));
 
         // return the result
-        return result;
+        return result.toString();
     }
 
     // get the full data
