@@ -11,11 +11,15 @@ import java.util.Scanner;
 
 public class ChatBot {
 	public static void main(String[] args) {
+		// Open scanner to let user input cities
+		Scanner myscanner = new Scanner(System.in);
 		// initial conversation
 		Color.println("-----------------------------------------------", Color.Type.GREEN);
 		Color.printChatBot(Conversation.greeting());
-
+		String inputOne = myscanner.nextLine();
+		System.out.println("ChatBot:Sure, Can you tell me the cities you want to go.");
 		try {
+			System.out.println("Or input 'no' to quit");
 			// Open scanner to let user input cities
 			Scanner scanner = new Scanner(System.in);
 
